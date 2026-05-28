@@ -76,11 +76,17 @@ public class MonitoreoService {
     }
 
     // ELIMINAR MONITOREO
-    public void eliminar(int id) {
+    public String eliminar(int id) {
 
         // removeIf elimina automáticamente si encuentra coincidencia
-        listaMonitoreos.removeIf(monitoreo ->
+        boolean eliminado = listaMonitoreos.removeIf(monitoreo ->
                 monitoreo.getId() == id);
+
+        if (eliminado) {
+            return "Monitoreo eliminado correctamente.";
+        } else {
+            return "No se encontró el monitoreo con el ID proporcionado.";
+        }
     }
 
     // TOTAL DE MONITOREOS

@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
 
      @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidationErrors(MethodArgumentNotValidException ex) {
-        System.out.println("🔴 Error de validación detectado en los datos del Piloto");
+        System.out.println("🔴 Error de validación detectado en los datos");
 
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST, // Código 400: Petición incorrecta

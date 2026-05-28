@@ -1,168 +1,200 @@
 package cl.GestionDrones.v1.monitoreos.controller;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+//import cl.GestionDrones.v1.monitoreos.dto.UpdateMonitoreoRequest;
 import cl.GestionDrones.v1.monitoreos.model.Monitoreo;
 import cl.GestionDrones.v1.monitoreos.service.MonitoreoService;
 
+import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/v1/monitoreos")
+@RequestMapping("/api/monitoreos")
 public class MonitoreosController {
 
-    private final MonitoreoService monitoreoService;
+    @Autowired
+    private MonitoreoService monitoreoService;
 
-    // Inyección por constructor
-    public MonitoreosController(MonitoreoService monitoreoService) {
-        this.monitoreoService = monitoreoService;
-    }
-
-    // LISTAR TODOS LOS MONITOREOS
     @GetMapping
-    public ResponseEntity<List<Monitoreo>> listarMonitoreos() {
-
-        List<Monitoreo> monitoreos = monitoreoService.obtenerTodos();
-
-        // IF: Si no existen registros de monitoreo
-        if (monitoreos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(monitoreos);
+    public ResponseEntity<List<Monitoreo>> getAllMonitoreos() {
+        return new ResponseEntity<>(
+                monitoreoService.obtenerTodos(),
+                HttpStatus.OK
+        );
     }
 
-    // CREAR NUEVO MONITOREO
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getMonitoreoById(@PathVariable Integer id) {
+
+        Monitoreo monitoreo = monitoreoService.obtenerPorId(id);
+
+        if (monitoreo == null) {
+
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "No encontrado");
+            error.put("mensaje",
+                    "No existe el monitoreo con ID: " + id);
+
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(monitoreo, HttpStatus.OK);
+    }
+
     @PostMapping
-    public ResponseEntity<Monitoreo> agregarMonitoreo(
-            @RequestBody Monitoreo monitoreo) {
+    public ResponseEntity<?> createMonitoreo(
+            @Valid @RequestBody Monitoreo monitoreo,
+            BindingResult result) {
 
-        // IF: Validación del ID del plan de vuelo
-        if (monitoreo.getPlanVueloId() <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (result.hasErrors()) {
 
-        // IF: Validación del ID de empresa proveedora
-        if (monitoreo.getEmpresaProveedoraId() <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
+            Map<String, String> errores = new HashMap<>();
 
-        // IF: Validación de región vacía
-        if (monitoreo.getRegion() == null || monitoreo.getRegion().isBlank()) {
-            return ResponseEntity.badRequest().build();
+            result.getFieldErrors().forEach(error ->
+                    errores.put(
+                            error.getField(),
+                            error.getDefaultMessage()
+                    )
+            );
+
+            return new ResponseEntity<>(
+                    errores,
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         Monitoreo nuevoMonitoreo =
                 monitoreoService.guardar(monitoreo);
 
-        // IF: Error interno al guardar
-        if (nuevoMonitoreo == null) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .build();
-        }
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(nuevoMonitoreo);
+        return new ResponseEntity<>(
+                nuevoMonitoreo,
+                HttpStatus.CREATED
+        );
     }
 
-    // BUSCAR MONITOREO POR ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Monitoreo> buscarMonitoreo(
-            @PathVariable int id) {
-
-        // IF: Validación del ID
-        if (id <= 0) {
-            return ResponseEntity.badRequest().build();
+    @PutMapping
+    public ResponseEntity<?> updateMonitoreo(@Valid @RequestBody Monitoreo monitoreo, BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            result.getFieldErrors().forEach(error -> 
+                errores.put(error.getField(), error.getDefaultMessage())
+            );
+            return new ResponseEntity<>(errores, HttpStatus.BAD_REQUEST);
         }
 
-        Monitoreo monitoreo =
-                monitoreoService.obtenerPorId(id);
-
-        // IF: No encontrado
-        if (monitoreo == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(monitoreo);
+        Monitoreo monitoreoActualizado = monitoreoService.actualizar(monitoreo);
+        return new ResponseEntity<>(monitoreoActualizado, HttpStatus.OK);
     }
 
-    // ACTUALIZAR MONITOREO
-    @PutMapping("/{id}")
-    public ResponseEntity<Monitoreo> actualizarMonitoreo(
-            @PathVariable int id,
-            @RequestBody Monitoreo monitoreo) {
 
-        // IF: Validación ID URL
-        if (id <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        monitoreo.setId(id);
-
-        Monitoreo monitoreoActualizado =
-                monitoreoService.actualizar(monitoreo);
-
-        // IF: No existe el monitoreo
-        if (monitoreoActualizado == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(monitoreoActualizado);
-    }
-
-    // ELIMINAR MONITOREO
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarMonitoreo(
-            @PathVariable int id) {
+    public ResponseEntity<?> deleteMonitoreo(
+            @PathVariable Integer id) {
 
-        // IF: Validación del ID
-        if (id <= 0) {
-            return ResponseEntity.badRequest().build();
+        String resultado =
+                monitoreoService.eliminar(id);
+
+        Map<String, String> respuestaJson =
+                new HashMap<>();
+
+        if (resultado == null) {
+
+            respuestaJson.put("error", "No encontrado");
+
+            respuestaJson.put(
+                    "mensaje",
+                    "No se puede eliminar. No existe el monitoreo con ID: " + id
+            );
+
+            return new ResponseEntity<>(
+                    respuestaJson,
+                    HttpStatus.NOT_FOUND
+            );
         }
 
-        monitoreoService.eliminar(id);
+        respuestaJson.put("mensaje", resultado);
 
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(
+                respuestaJson,
+                HttpStatus.OK
+        );
     }
 
-    // TOTAL DE MONITOREOS
-    @GetMapping("/total")
-    public ResponseEntity<Integer> totalMonitoreos() {
 
-        int total = monitoreoService.totalMonitoreos();
-
-        // IF: Error lógico en conteo
-        if (total < 0) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(0);
-        }
-
-        return ResponseEntity.ok(total);
-    }
-
-    // BUSCAR POR PLAN DE VUELO
-    @GetMapping("/plan-vuelo/{planVueloId}")
-    public ResponseEntity<List<Monitoreo>> buscarPorPlanVuelo(
-            @PathVariable int planVueloId) {
-
-        // IF: Validación del ID
-        if (planVueloId <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
+    @GetMapping("/region/{region}")
+    public ResponseEntity<?> getMonitoreosPorRegion(
+            @PathVariable String region) {
 
         List<Monitoreo> monitoreos =
-                monitoreoService.obtenerPorPlanVuelo(planVueloId);
+                monitoreoService.obtenerPorRegion(region);
 
-        // IF: Sin registros
         if (monitoreos.isEmpty()) {
-            return ResponseEntity.notFound().build();
+
+            Map<String, String> error = new HashMap<>();
+
+            error.put("error", "No encontrado");
+
+            error.put(
+                    "mensaje",
+                    "No existen monitoreos registrados para la región: " + region
+            );
+
+            return new ResponseEntity<>(
+                    error,
+                    HttpStatus.NOT_FOUND
+            );
         }
 
-        return ResponseEntity.ok(monitoreos);
+        return new ResponseEntity<>(
+                monitoreos,
+                HttpStatus.OK
+        );
+    }
+
+
+    @GetMapping("/estado/{estadoVuelo}")
+    public ResponseEntity<?> getMonitoreosPorEstado(
+            @PathVariable String estadoVuelo) {
+
+        List<Monitoreo> monitoreos =
+                monitoreoService.obtenerPorEstado(estadoVuelo);
+
+        if (monitoreos.isEmpty()) {
+
+            Map<String, String> error = new HashMap<>();
+
+            error.put("error", "No encontrado");
+
+            error.put(
+                    "mensaje",
+                    "No existen monitoreos con estado: " + estadoVuelo
+            );
+
+            return new ResponseEntity<>(
+                    error,
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+        return new ResponseEntity<>(
+                monitoreos,
+                HttpStatus.OK
+        );
+    }
+
+    public ResponseEntity<Integer> getTotalMonitoreos() {
+
+        return new ResponseEntity<>(
+                monitoreoService.totalMonitoreos(),
+                HttpStatus.OK
+        );
     }
 }
