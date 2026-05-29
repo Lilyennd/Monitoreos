@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface MonitoreosRepository
         extends JpaRepository<Monitoreo, Integer> {
 
-    // BUSCAR POR PLAN DE VUELO
+    
     @Query(value = """
             SELECT * 
             FROM monitoreo_vuelo
@@ -23,7 +23,7 @@ public interface MonitoreosRepository
     List<Monitoreo> buscarPorPlanVuelo(
             @Param("planVueloId") int planVueloId);
 
-    // BUSCAR POR EMPRESA PROVEEDORA
+    
     @Query(value = """
             SELECT * 
             FROM monitoreo_vuelo
@@ -32,7 +32,7 @@ public interface MonitoreosRepository
     List<Monitoreo> buscarPorEmpresaProveedora(
             @Param("empresaId") int empresaId);
 
-    // BUSCAR POR REGIÓN
+    
     @Query(value = """
             SELECT * 
             FROM monitoreo_vuelo
@@ -41,7 +41,7 @@ public interface MonitoreosRepository
     List<Monitoreo> buscarPorRegion(
             @Param("region") String region);
 
-    // BUSCAR POR ESTADO DEL VUELO
+    
     @Query(value = """
             SELECT * 
             FROM monitoreo_vuelo
@@ -50,7 +50,7 @@ public interface MonitoreosRepository
     List<Monitoreo> buscarPorEstadoVuelo(
             @Param("estadoVuelo") String estadoVuelo);
 
-    // BUSCAR OPERACIONES EN ZONA URBANA
+    
     @Query(value = """
             SELECT * 
             FROM monitoreo_vuelo
@@ -58,7 +58,7 @@ public interface MonitoreosRepository
             """, nativeQuery = true)
     List<Monitoreo> buscarZonaUrbana();
 
-    // BUSCAR POR ZONA RESTRINGIDA
+    
     @Query(value = """
             SELECT * 
             FROM monitoreo_vuelo
@@ -67,7 +67,7 @@ public interface MonitoreosRepository
     List<Monitoreo> buscarPorZonaRestringida(
             @Param("zonaId") Integer zonaId);
 
-    // BUSCAR POR TIPO DE OPERACIÓN
+    
     @Query(value = """
             SELECT * 
             FROM monitoreo_vuelo
@@ -76,7 +76,7 @@ public interface MonitoreosRepository
     List<Monitoreo> buscarPorTipoOperacion(
             @Param("tipoOperacion") String tipoOperacion);
 
-    // BUSCAR MONITOREOS DESDE UNA FECHA
+    
     @Query(value = """
             SELECT * 
             FROM monitoreo_vuelo

@@ -18,11 +18,11 @@ public class Monitoreo {
     @Column(name = "id")
     private int id;
 
-    // Relación o referencia al Plan de Vuelo que se está monitoreando
+    
     @Column(name = "plan_vuelo_id", nullable = false)
     private int planVueloId;
 
-    // ID de referencia que proviene del microservicio externo de Empresa Proveedora.
+    
     @Column(name = "empresa_proveedora_id", nullable = false)
     private int empresaProveedoraId;
 
@@ -36,20 +36,19 @@ public class Monitoreo {
     private String tipoOperacion;
 
     @Column(name = "estado_vuelo", nullable = false, length = 30)
-    private String estadoVuelo; // Ejemplo: "Planificado", "Activo", "Finalizado"
+    private String estadoVuelo; 
 
     @Column(name = "es_zona_urbana", nullable = false)
     private boolean esZonaUrbana;
 
-    // ID de referencia que proviene del microservicio externo de Zona Restringida.
-    // Puede ser NULL si el vuelo opera en un espacio aéreo completamente libre[cite: 44].
+    
     @Column(name = "zona_restringida_id", nullable = true)
     private Integer zonaRestringidaId;
 
-    // Constructor sin argumentos requerido por JPA/Hibernate
+    
     public Monitoreo() {}
 
-    // Constructor completo
+    
     public Monitoreo(int id, int planVueloId, int empresaProveedoraId, String region, 
                      LocalDateTime fechaHoraMonitoreo, String tipoOperacion, 
                      String estadoVuelo, boolean esZonaUrbana, Integer zonaRestringidaId) {
@@ -64,7 +63,7 @@ public class Monitoreo {
         this.zonaRestringidaId = zonaRestringidaId;
     }
 
-    // Getters y Setters manuales
+    
     public int getId() {
         return id;
     }

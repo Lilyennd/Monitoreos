@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
         System.out.println("🔴 Error de validación detectado en los datos");
 
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST, // Código 400: Petición incorrecta
+                HttpStatus.BAD_REQUEST, 
                 "Error de validación en los datos enviados"
         );
         problem.setTitle("Validation Error");
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
             errors.put(campo, mensaje);
         }
 
-        // Añadimos el diccionario al JSON de respuesta
+        
         problem.setProperty("errors", errors);
         return problem;
     }
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
         System.out.println("🟡 RECURSO NO ENCONTRADO: " + ex.getMessage());
 
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.NOT_FOUND, // Código 404: Not Found
+                HttpStatus.NOT_FOUND, 
                 ex.getMessage()
         );
 
