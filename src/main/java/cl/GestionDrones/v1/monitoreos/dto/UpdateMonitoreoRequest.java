@@ -8,13 +8,13 @@ import jakarta.validation.constraints.NotNull;
 public record UpdateMonitoreoRequest (
 
     @NotBlank(message = "El ID no puede estar vacío") 
-    int id,
+    Long id,
     
     @NotBlank(message = "El ID del plan no puede estar vacío") 
-    int planVueloId,    
+    Long planVueloId,    
     
     @NotBlank(message = "El ID de la empresa no puede estar vacío") 
-    int empresaProveedoraId,  
+    Long empresaProveedoraId,  
     
     @NotBlank(message = "La region no puede estar vacía") 
     String region,
@@ -32,7 +32,7 @@ public record UpdateMonitoreoRequest (
     boolean esZonaUrbana,
 
     @NotNull(message = "El ID de la zona es obligatorio") 
-    Integer zonaRestringidaId
+    Long zonaRestringidaId
 
 
 ){}

@@ -11,78 +11,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MonitoreosRepository
-        extends JpaRepository<Monitoreo, Integer> {
+public interface MonitoreosRepository extends JpaRepository<Monitoreo, Long> {
 
-    
-    @Query(value = """
-            SELECT * 
-            FROM monitoreo_vuelo
-            WHERE plan_vuelo_id = :planVueloId
-            """, nativeQuery = true)
-    List<Monitoreo> buscarPorPlanVuelo(
-            @Param("planVueloId") int planVueloId);
+    List<Monitoreo> findByPlanVueloId(Long planVueloId);
 
-    
-    @Query(value = """
-            SELECT * 
-            FROM monitoreo_vuelo
-            WHERE empresa_proveedora_id = :empresaId
-            """, nativeQuery = true)
-    List<Monitoreo> buscarPorEmpresaProveedora(
-            @Param("empresaId") int empresaId);
-
-    
-    @Query(value = """
-            SELECT * 
-            FROM monitoreo_vuelo
-            WHERE region = :region
-            """, nativeQuery = true)
-    List<Monitoreo> buscarPorRegion(
-            @Param("region") String region);
-
-    
-    @Query(value = """
-            SELECT * 
-            FROM monitoreo_vuelo
-            WHERE estado_vuelo = :estadoVuelo
-            """, nativeQuery = true)
-    List<Monitoreo> buscarPorEstadoVuelo(
-            @Param("estadoVuelo") String estadoVuelo);
-
-    
-    @Query(value = """
-            SELECT * 
-            FROM monitoreo_vuelo
-            WHERE es_zona_urbana = true
-            """, nativeQuery = true)
-    List<Monitoreo> buscarZonaUrbana();
-
-    
-    @Query(value = """
-            SELECT * 
-            FROM monitoreo_vuelo
-            WHERE zona_restringida_id = :zonaId
-            """, nativeQuery = true)
-    List<Monitoreo> buscarPorZonaRestringida(
-            @Param("zonaId") Integer zonaId);
-
-    
-    @Query(value = """
-            SELECT * 
-            FROM monitoreo_vuelo
-            WHERE tipo_operacion = :tipoOperacion
-            """, nativeQuery = true)
-    List<Monitoreo> buscarPorTipoOperacion(
-            @Param("tipoOperacion") String tipoOperacion);
-
-    
-    @Query(value = """
-            SELECT * 
-            FROM monitoreo_vuelo
-            WHERE fecha_hora_monitoreo >= :fecha
-            """, nativeQuery = true)
-    List<Monitoreo> buscarDesdeFecha(
-            @Param("fecha") LocalDateTime fecha);
+    List<Monitoreo> findByEmpresaProveedoraId(Long empresaProveedoraId);
 
 }
+ 

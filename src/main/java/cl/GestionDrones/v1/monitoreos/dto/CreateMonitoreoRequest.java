@@ -4,40 +4,38 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+public record CreateMonitoreoRequest(
 
-public record CreateMonitoreoRequest (
-
-    @NotBlank(message = "El ID no puede estar vacío") 
-    int id,
+    // Nota: Si el ID es autogenerado por la BD, normalmente no lo necesitas aquí.
+    // Pero si lo envías, debe ser @NotNull, no @NotBlank.
+    @NotNull(message = "El ID es obligatorio") 
+    Long id,
     
-    @NotBlank(message = "El ID del plan no puede estar vacío") 
-    int planVueloId,    
+    @NotNull(message = "El ID del plan no puede ser nulo") 
+    Long planVueloId,    
     
-    @NotBlank(message = "El ID de la empresa no puede estar vacío") 
-    int empresaProveedoraId,  
+    @NotNull(message = "El ID de la empresa no puede ser nulo") 
+    Long empresaProveedoraId,  
     
     @NotBlank(message = "La region no puede estar vacía") 
     String region,
     
-    @NotBlank(message = "La fecha no puede estar vacío") 
+    @NotNull(message = "La fecha es obligatoria") 
     LocalDateTime fechaHoraMonitoreo,
     
     @NotBlank(message = "El tipo de operación no puede estar vacío") 
     String tipoOperacion,
     
-    @NotNull(message = "El estado de vuelo es obligatorio") 
+    @NotBlank(message = "El estado de vuelo es obligatorio") 
     String estadoVuelo,
 
-    @NotNull(message = "El tipo de zona es obligatorio") 
+    // boolean no puede ser nulo, @NotNull aquí es opcional pero ayuda a la claridad
     boolean esZonaUrbana,
 
     @NotNull(message = "El ID de la zona es obligatorio") 
-    Integer zonaRestringidaId
+    Long zonaRestringidaId
 
-
-)
-
-{}
+) {}
 
 
 

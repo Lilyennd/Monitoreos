@@ -9,7 +9,7 @@ public class MonitoreosMapper {
     public static Monitoreo toEntity(CreateMonitoreoRequest request) {
         Monitoreo monitoreo = new Monitoreo();
         
-        monitoreo.setId(request.id());
+        // No seteamos el ID porque es autogenerado por la BD
         monitoreo.setPlanVueloId(request.planVueloId()); 
         monitoreo.setEmpresaProveedoraId(request.empresaProveedoraId()); 
         monitoreo.setRegion(request.region());
@@ -26,9 +26,11 @@ public class MonitoreosMapper {
     public static Monitoreo toMonitoreo(UpdateMonitoreoRequest request) {
         Monitoreo monitoreo = new Monitoreo();
         
+        // En un update sí es necesario el ID para identificar qué registro modificar
         monitoreo.setId(request.id());
         monitoreo.setPlanVueloId(request.planVueloId());
         monitoreo.setEmpresaProveedoraId(request.empresaProveedoraId());
+        monitoreo.setRegion(request.region()); // Agregué region que faltaba
         monitoreo.setFechaHoraMonitoreo(request.fechaHoraMonitoreo());
         monitoreo.setTipoOperacion(request.tipoOperacion());
         monitoreo.setEstadoVuelo(request.estadoVuelo());

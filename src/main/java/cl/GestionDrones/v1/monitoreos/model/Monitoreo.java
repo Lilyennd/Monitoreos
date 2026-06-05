@@ -16,15 +16,15 @@ public class Monitoreo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     
     @Column(name = "plan_vuelo_id", nullable = false)
-    private int planVueloId;
+    private Long planVueloId;
 
     
     @Column(name = "empresa_proveedora_id", nullable = false)
-    private int empresaProveedoraId;
+    private Long empresaProveedoraId;
 
     @Column(name = "region", nullable = false, length = 100)
     private String region;
@@ -43,15 +43,15 @@ public class Monitoreo {
 
     
     @Column(name = "zona_restringida_id", nullable = true)
-    private Integer zonaRestringidaId;
+    private Long zonaRestringidaId;
 
     
     public Monitoreo() {}
 
     
-    public Monitoreo(int id, int planVueloId, int empresaProveedoraId, String region, 
+    public Monitoreo(Long id, Long planVueloId, Long empresaProveedoraId, String region, 
                      LocalDateTime fechaHoraMonitoreo, String tipoOperacion, 
-                     String estadoVuelo, boolean esZonaUrbana, Integer zonaRestringidaId) {
+                     String estadoVuelo, boolean esZonaUrbana, Long zonaRestringidaId) {
         this.id = id;
         this.planVueloId = planVueloId;
         this.empresaProveedoraId = empresaProveedoraId;
@@ -64,27 +64,27 @@ public class Monitoreo {
     }
 
     
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getPlanVueloId() {
+    public Long getPlanVueloId() {
         return planVueloId;
     }
 
-    public void setPlanVueloId(int planVueloId) {
+    public void setPlanVueloId(Long planVueloId) {
         this.planVueloId = planVueloId;
     }
 
-    public int getEmpresaProveedoraId() {
+    public Long getEmpresaProveedoraId() {
         return empresaProveedoraId;
     }
 
-    public void setEmpresaProveedoraId(int empresaProveedoraId) {
+    public void setEmpresaProveedoraId(Long empresaProveedoraId) {
         this.empresaProveedoraId = empresaProveedoraId;
     }
 
@@ -128,11 +128,11 @@ public class Monitoreo {
         this.esZonaUrbana = esZonaUrbana;
     }
 
-    public Integer getZonaRestringidaId() {
+    public Long getZonaRestringidaId() {
         return zonaRestringidaId;
     }
 
-    public void setZonaRestringidaId(Integer zonaRestringidaId) {
+    public void setZonaRestringidaId(Long zonaRestringidaId) {
         this.zonaRestringidaId = zonaRestringidaId;
     }
 }
