@@ -31,13 +31,10 @@ public class MonitoreoService {
         this.incidenciasWebClient = incidenciasWebClient;
     }
 
-    // 1. MÉTODO DE ORQUESTACIÓN (El "enriquecido")
     public MonitoreoEnriquecidoResponse obtenerMonitoreoCompleto(Long id) {
-        // 1. Obtener la entidad local
         Monitoreo m = monitoreoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Monitoreo no encontrado con ID: " + id));
 
-        // 2. Obtener Plan de Vuelo (WebClient)
         PlanesDeVuelosResponse plan = null;
         try {
             plan = planesVueloWebClient.get()
@@ -49,7 +46,6 @@ public class MonitoreoService {
             System.out.println("🔴 Error al conectar con Planes de Vuelo: " + e.getMessage());
         }
 
-        // 3. Obtener Incidencias (WebClient)
         List<IncidenciaResponse> incidencias = Collections.emptyList();
         try {
             incidencias = incidenciasWebClient.get()
@@ -62,7 +58,6 @@ public class MonitoreoService {
             System.out.println("🔴 Error al conectar con Incidencias: " + e.getMessage());
         }
 
-        // 4. Retornar la respuesta enriquecida
         return new MonitoreoEnriquecidoResponse(
                 m.getId(), 
                 m.getPlanVueloId(), 
@@ -78,7 +73,6 @@ public class MonitoreoService {
         );
     }
 
-    // 2. MÉTODOS CRUD Y OTROS
     public List<Monitoreo> obtenerTodos() {
         return monitoreoRepository.findAll();
     }
@@ -86,10 +80,8 @@ public class MonitoreoService {
     public Monitoreo guardar(CreateMonitoreoRequest request) {
         if (request == null) return null;
         
-        // Convertimos el DTO (CreateMonitoreoRequest) a la entidad pura (Monitoreo)
         Monitoreo monitoreo = MonitoreosMapper.toEntity(request);
         
-        // Guardamos en la base de datos
         return monitoreoRepository.save(monitoreo);
     }
 
@@ -103,12 +95,9 @@ public class MonitoreoService {
             return null;
         }
         
-        // Primero validamos si el registro realmente existe en la base de datos
         if (monitoreoRepository.existsById(request.id())) {
-            // Tu mapper se encarga de convertir el DTO a la entidad Monitoreo con su ID asignado
             Monitoreo monitoreoActualizado = MonitoreosMapper.toMonitoreo(request);
             
-            // Guardamos los cambios (JPA interpreta el save con ID existente como un UPDATE)
             return monitoreoRepository.save(monitoreoActualizado);
         }
         

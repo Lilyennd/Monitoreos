@@ -50,12 +50,11 @@ public class MonitoreosController {
         }
         return new ResponseEntity<>(monitoreo, HttpStatus.OK);
     }
-    
+
     @PostMapping
 public ResponseEntity<?> createMonitoreo(@Valid @RequestBody CreateMonitoreoRequest request, BindingResult result) {
     if (result.hasErrors()) return getValidationErrorResponse(result);
     
-    // Le pasamos el objeto request (DTO) al servicio
     Monitoreo nuevo = monitoreoService.guardar(request);
     
     if (nuevo == null) {
@@ -68,7 +67,6 @@ public ResponseEntity<?> createMonitoreo(@Valid @RequestBody CreateMonitoreoRequ
 public ResponseEntity<?> updateMonitoreo(@Valid @RequestBody UpdateMonitoreoRequest request, BindingResult result) {
     if (result.hasErrors()) return getValidationErrorResponse(result);
     
-    // Enviamos el DTO de actualización al servicio
     Monitoreo updated = monitoreoService.actualizar(request);
     
     if (updated == null) {
@@ -88,7 +86,6 @@ public ResponseEntity<?> updateMonitoreo(@Valid @RequestBody UpdateMonitoreoRequ
         return ResponseEntity.ok(respuesta);
     }
 
-    // 3. Endpoints de Búsqueda Personalizada
     @GetMapping("/total")
     public ResponseEntity<Long> getTotalMonitoreos() {
         return ResponseEntity.ok(monitoreoService.totalMonitoreos());
@@ -108,7 +105,6 @@ public ResponseEntity<?> updateMonitoreo(@Valid @RequestBody UpdateMonitoreoRequ
         return ResponseEntity.ok(lista);
     }
 
-    // --- Métodos de apoyo ---
     private ResponseEntity<Map<String, String>> getValidationErrorResponse(BindingResult result) {
         Map<String, String> errores = new HashMap<>();
         result.getFieldErrors().forEach(e -> errores.put(e.getField(), e.getDefaultMessage()));
