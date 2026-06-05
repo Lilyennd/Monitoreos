@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import cl.GestionDrones.v1.monitoreos.model.Monitoreo;
 import cl.GestionDrones.v1.monitoreos.dto.*;
 import cl.GestionDrones.v1.monitoreos.exception.ResourceNotFoundException;
+import cl.GestionDrones.v1.monitoreos.mapper.MonitoreosMapper;
 import cl.GestionDrones.v1.monitoreos.repository.MonitoreosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -82,8 +83,13 @@ public class MonitoreoService {
         return monitoreoRepository.findAll();
     }
 
-    public Monitoreo guardar(Monitoreo monitoreo) {
-        if (monitoreo == null) return null;
+    public Monitoreo guardar(CreateMonitoreoRequest request) {
+        if (request == null) return null;
+        
+        // Convertimos el DTO (CreateMonitoreoRequest) a la entidad pura (Monitoreo)
+        Monitoreo monitoreo = MonitoreosMapper.toEntity(request);
+        
+        // Guardamos en la base de datos
         return monitoreoRepository.save(monitoreo);
     }
 
@@ -92,11 +98,20 @@ public class MonitoreoService {
         return monitoreoRepository.findById(id).orElse(null);
     }
 
-    public Monitoreo actualizar(Monitoreo monitoreoActualizado) {
-        if (monitoreoActualizado == null || monitoreoActualizado.getId() == null || monitoreoActualizado.getId() <= 0) return null;
-        if (monitoreoRepository.existsById(monitoreoActualizado.getId())) {
+    public Monitoreo actualizar(UpdateMonitoreoRequest request) {
+        if (request == null || request.id() == null || request.id() <= 0) {
+            return null;
+        }
+        
+        // Primero validamos si el registro realmente existe en la base de datos
+        if (monitoreoRepository.existsById(request.id())) {
+            // Tu mapper se encarga de convertir el DTO a la entidad Monitoreo con su ID asignado
+            Monitoreo monitoreoActualizado = MonitoreosMapper.toMonitoreo(request);
+            
+            // Guardamos los cambios (JPA interpreta el save con ID existente como un UPDATE)
             return monitoreoRepository.save(monitoreoActualizado);
         }
+        
         return null;
     }
 

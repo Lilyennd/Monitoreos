@@ -7,25 +7,25 @@ import jakarta.validation.constraints.NotNull;
 
 public record UpdateMonitoreoRequest (
 
-    @NotBlank(message = "El ID no puede estar vacío") 
+    @NotNull(message = "El ID no puede ser nulo") 
     Long id,
     
-    @NotBlank(message = "El ID del plan no puede estar vacío") 
+    @NotNull(message = "El ID del plan no puede ser nulo") 
     Long planVueloId,    
     
-    @NotBlank(message = "El ID de la empresa no puede estar vacío") 
+    @NotNull(message = "El ID de la empresa no puede ser nulo") 
     Long empresaProveedoraId,  
     
     @NotBlank(message = "La region no puede estar vacía") 
     String region,
     
-    @NotBlank(message = "La fecha no puede estar vacía") 
+    @NotNull(message = "La fecha no puede estar vacía") 
     LocalDateTime fechaHoraMonitoreo,
     
     @NotBlank(message = "El tipo de operación no puede estar vacío") 
     String tipoOperacion,
     
-    @NotNull(message = "El estado de vuelo es obligatorio") 
+    @NotBlank(message = "El estado de vuelo es obligatorio") 
     String estadoVuelo,
 
     @NotNull(message = "El tipo de zona es obligatorio") 
