@@ -1,6 +1,8 @@
 package cl.GestionDrones.v1.monitoreos.controller;
 
+import cl.GestionDrones.v1.monitoreos.dto.CreateMonitoreoRequest;
 import cl.GestionDrones.v1.monitoreos.dto.MonitoreoEnriquecidoResponse;
+import cl.GestionDrones.v1.monitoreos.dto.UpdateMonitoreoRequest;
 import cl.GestionDrones.v1.monitoreos.model.Monitoreo;
 import cl.GestionDrones.v1.monitoreos.service.MonitoreoService;
 
@@ -48,22 +50,32 @@ public class MonitoreosController {
         }
         return new ResponseEntity<>(monitoreo, HttpStatus.OK);
     }
-
+    
     @PostMapping
-    public ResponseEntity<?> createMonitoreo(@Valid @RequestBody Monitoreo monitoreo, BindingResult result) {
-        if (result.hasErrors()) return getValidationErrorResponse(result);
-        Monitoreo nuevo = monitoreoService.guardar(monitoreo);
-        if (nuevo == null) return buildErrorResponse("Error", "No se pudo crear el monitoreo", HttpStatus.INTERNAL_SERVER_ERROR);
-        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+public ResponseEntity<?> createMonitoreo(@Valid @RequestBody CreateMonitoreoRequest request, BindingResult result) {
+    if (result.hasErrors()) return getValidationErrorResponse(result);
+    
+    // Le pasamos el objeto request (DTO) al servicio
+    Monitoreo nuevo = monitoreoService.guardar(request);
+    
+    if (nuevo == null) {
+        return buildErrorResponse("Error", "No se pudo crear el monitoreo", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+}
 
     @PutMapping
-    public ResponseEntity<?> updateMonitoreo(@Valid @RequestBody Monitoreo monitoreo, BindingResult result) {
-        if (result.hasErrors()) return getValidationErrorResponse(result);
-        Monitoreo updated = monitoreoService.actualizar(monitoreo);
-        if (updated == null) return buildErrorResponse("Error", "No se pudo actualizar, el ID no existe", HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(updated);
+public ResponseEntity<?> updateMonitoreo(@Valid @RequestBody UpdateMonitoreoRequest request, BindingResult result) {
+    if (result.hasErrors()) return getValidationErrorResponse(result);
+    
+    // Enviamos el DTO de actualización al servicio
+    Monitoreo updated = monitoreoService.actualizar(request);
+    
+    if (updated == null) {
+        return buildErrorResponse("Error", "No se pudo actualizar, el ID no existe o es inválido", HttpStatus.NOT_FOUND);
     }
+    return ResponseEntity.ok(updated);
+}
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMonitoreo(@PathVariable Long id) {
